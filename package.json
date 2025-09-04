@@ -4,12 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --exec ts-node src/index.ts"
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "dev:api": "nodemon --exec ts-node src/index.ts --api"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
@@ -19,6 +21,7 @@
     "morgan": "^1.10.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/morgan": "^1.9.10",
