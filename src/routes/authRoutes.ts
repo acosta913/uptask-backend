@@ -2,6 +2,7 @@ import { Router } from "express";
 import { AuthController } from "../controllers/AuthController";
 import { body } from "express-validator";
 import { handleInputErrors } from "../middleware/validation";
+import { AuthEmail } from "../emails/AuthEmail";
 
 const router = Router();
 
@@ -20,6 +21,28 @@ router.post(
   body("email").isEmail().withMessage("E-mail no valido"),
   handleInputErrors,
   AuthController.createAccount
+);
+
+router.post(
+  "/confirm-account",
+  body("token").notEmpty().withMessage("El Token es requerido"),
+  handleInputErrors,
+  AuthController.confirmAccount
+);
+
+router.post(
+  "/login",
+  body("email").isEmail().withMessage("E-mail no valido"),
+  body("password").notEmpty().withMessage("El password es requerido"),
+  handleInputErrors,
+  AuthController.login
+);
+
+router.post(
+  "/request-code",
+  body("email").isEmail().withMessage("E-mail no valido"),
+  handleInputErrors,
+  AuthController.requestConfirmationCode
 );
 
 export default router;
