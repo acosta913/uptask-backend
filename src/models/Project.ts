@@ -1,11 +1,14 @@
 import mongoose, { Document, PopulatedDoc, Schema, Types } from "mongoose";
 import { ITask } from "./Task";
+import { IUser } from "./User";
 
 export interface IProject extends Document {
   projectName: string;
   clientName: string;
   description: string;
   tasks: PopulatedDoc<ITask & Document>[];
+  manager: PopulatedDoc<IUser & Document>;
+  team: PopulatedDoc<IUser & Document>[];
 }
 
 const ProjectSchema: Schema = new Schema(
@@ -26,6 +29,11 @@ const ProjectSchema: Schema = new Schema(
       trim: true,
     },
     tasks: [{ type: Types.ObjectId, ref: "Task" }],
+    manager: {
+      type: Types.ObjectId,
+      ref: "User",
+    },
+    team: [{ type: Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );
