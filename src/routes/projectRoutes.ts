@@ -4,9 +4,14 @@ import { body, param } from "express-validator";
 import { handleInputErrors } from "../middleware/validation";
 import { TaskController } from "../controllers/TaskController";
 import { projectExists } from "../middleware/project";
-import { tasktBelongsToProject, tasktExists } from "../middleware/task";
+import {
+  hasAuthorization,
+  tasktBelongsToProject,
+  tasktExists,
+} from "../middleware/task";
 import { authenticate } from "../middleware/auth";
 import { TeamMemberController } from "../controllers/TeamController";
+import { NoteController } from "../controllers/NoteController";
 
 const routes = Router();
 routes.use(authenticate);
@@ -52,10 +57,9 @@ routes.delete(
 
 /** Routes for tasks */
 routes.param("projectId", projectExists);
-routes.param("taskId", tasktExists);
-routes.param("taskId", tasktBelongsToProject);
 routes.post(
   "/:projectId/tasks",
+  hasAuthorization,
   body("name").notEmpty().withMessage("Nombre de la tarea Obligatorio"),
   body("description")
     .notEmpty()
@@ -66,6 +70,8 @@ routes.post(
 
 routes.get("/:projectId/tasks", TaskController.getProjectTask);
 
+routes.param("taskId", tasktExists);
+routes.param("taskId", tasktBelongsToProject);
 routes.get(
   "/:projectId/tasks/:taskId",
   param("taskId").isMongoId().withMessage("ID no valido"),
@@ -75,6 +81,7 @@ routes.get(
 
 routes.put(
   "/:projectId/tasks/:taskId",
+  hasAuthorization,
   param("taskId").isMongoId().withMessage("ID no valido"),
   body("name").notEmpty().withMessage("Nombre de la tarea Obligatorio"),
   body("description")
@@ -86,6 +93,7 @@ routes.put(
 
 routes.delete(
   "/:projectId/tasks/:taskId",
+  hasAuthorization,
   param("taskId").isMongoId().withMessage("ID no valido"),
   handleInputErrors,
   TaskController.daleteTask
@@ -121,5 +129,15 @@ routes.delete(
   param("userId").isMongoId().withMessage("ID no valido"),
   handleInputErrors,
   TeamMemberController.removeMemberById
+);
+
+/** Routes for notes */
+routes.post(
+  "/:projectId/tasks/:taskId/notes",
+  body("content")
+    .notEmpty()
+    .withMessage("El Contenido de la nota es requerido"),
+  handleInputErrors,
+  NoteController.createNote
 );
 export default routes;
