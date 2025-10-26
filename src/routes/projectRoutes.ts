@@ -140,4 +140,14 @@ routes.post(
   handleInputErrors,
   NoteController.createNote
 );
+
+routes.get("/:projectId/tasks/:taskId/notes", NoteController.getTaskNotes);
+
+routes.delete(
+  "/:projectId/tasks/:taskId/notes/:noteId",
+  param("noteId").isMongoId().withMessage("ID No Valido"),
+  handleInputErrors,
+  NoteController.deleteNote
+);
+
 export default routes;
